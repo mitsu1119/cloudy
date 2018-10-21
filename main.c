@@ -5,5 +5,6 @@ int main() {
     AST *sym2 = makeSymAST("sym2");
 
     drawSymTable();
+    yyparse();
     return 0;
 }
