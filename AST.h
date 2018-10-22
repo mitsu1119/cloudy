@@ -25,8 +25,11 @@ extern int symcnt;
 
 void drawSymTable();
 
-
+/* AST.c */
 AST *makeAST(enum ASTtype type, AST *left, AST *right);
 AST *makeSymAST(char *name);
 Symbol *searchSymbol(char *name);
 Symbol *getSymbol(AST *ast);
+
+/* compile.c */
+void defineFunction(Symbol *sym, AST *body);

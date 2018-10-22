@@ -9,7 +9,7 @@
     AST *val;
 }
 
-// %type <val> block
+%type <val> block
 %type <val> SYMBOL
 
 %start program
@@ -27,12 +27,12 @@ external_definitions:
 
 external_definition:
 	SYMBOL '(' ')' block
-    { printf("extdef\n"); }
+    { defineFunction(getSymbol($1), NULL); }
 	;
 
 block:
     '{' '}'
-    { printf("block\n"); }
+    { $$ = makeAST(blockSt, NULL, NULL); }
 	;
 
 %%
