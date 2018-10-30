@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 enum ASTtype {
-    symOp, blockSt, retSt
+    symOp, blockSt, retSt, listAST
 };
 
 typedef struct _AST {
@@ -28,6 +28,9 @@ void drawSymTable();
 /* AST.c */
 AST *makeAST(enum ASTtype type, AST *left, AST *right);
 AST *makeSymAST(char *name);
+AST *addList(AST *ast, AST *p);
+AST *getList(AST *ast, int num);
+AST *getNext(AST *ast);
 Symbol *searchSymbol(char *name);
 Symbol *getSymbol(AST *ast);
 

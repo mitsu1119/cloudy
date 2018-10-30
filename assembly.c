@@ -33,7 +33,12 @@ void funcAsm(char *name) {
     int i;
     printf("*** functionAsm <%s> ***\n", name);
     puts(".text");
-    puts(".align 4");
-
     printf(".global\t%s\n", name);
+    printf(".type\t%s, @function\n", name);
+    printf("%s:\n", name);
+
+    puts("push\tebp");      // push ebp
+    puts("mov\tebp, esp");  // mov ebp, esp
+    puts("sub\tesp, 4");    // sub esp, 4
+    
 }

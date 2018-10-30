@@ -17,6 +17,37 @@ AST *makeAST(enum ASTtype type, AST *left, AST *right) {
     return p;
 }
 
+AST *addList(AST *ast, AST *p) {
+    if(ast->type != listAST) {
+        fprintf(stderr, "bad list accessing\n");
+        exit(1);
+    }
+    AST *ret = ast;
+
+    // retの一番下へ
+    while(ret->right != NULL) ret = ret->right;
+    ret->right = makeAST(listAST, p, NULL);
+
+    return ret;
+}
+
+AST *getList(AST *ast, int num) {
+    if(ast->type != listAST) {
+        fprintf(stderr, "bad list accessing\n");
+        exit(1);
+    }
+    if(num == 0) return ast->right;
+    else return getList(ast->right, num-1);
+}
+
+AST *getNext(AST *ast) {
+    if(ast->type != listAST) {
+        fprintf(stderr, "bad list acccessing\n");
+        exit(1);
+    }
+    return ast->right;
+}
+
 AST *makeSymAST(char *name) {
     AST *p;
 
