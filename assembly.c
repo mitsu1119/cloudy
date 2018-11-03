@@ -7,6 +7,12 @@ struct _Code {
 } codes[MAX_CODES];
 int codecnt;
 
+// アセンブラ起動時の初期化関数
+void initAssemble() {
+    puts(".intel_syntax");
+}
+
+// 関数のアセンブルの初期化関数
 void asmIni() {
     codecnt = 0;
 }
@@ -31,14 +37,14 @@ void genCode3(int opcode, int operand1, int operand2, int operand3) {
 
 void funcAsm(char *name) {
     int i;
-    printf("*** functionAsm <%s> ***\n", name);
-    puts(".text");
-    printf(".global\t%s\n", name);
-    printf(".type\t%s, @function\n", name);
-    printf("%s:\n", name);
+
+    puts(".text");                                      /* .text */
+    printf(".global\t%s\n", name);                      /* .global  name */
+    printf(".type\t%s, @function\n", name);             /* .type    name, @function */
+    printf("%s:\n", name);                              /* name: */
 
     puts("push\tebp");      // push ebp
     puts("mov\tebp, esp");  // mov ebp, esp
     puts("sub\tesp, 4");    // sub esp, 4
-    
+
 }

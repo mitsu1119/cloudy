@@ -4,11 +4,12 @@
 #include <stdlib.h>
 
 enum ASTtype {
-    symOp, blockSt, retSt, listAST
+    eqOp, addOp, subOp, mulOp, divOp, symOp, numOp, blockSt, retSt, listAST
 };
 
 typedef struct _AST {
     enum ASTtype type;
+    int val;
     struct _AST *right, *left;
     struct _Symbol *sym;
 } AST;
@@ -28,6 +29,7 @@ void drawSymTable();
 /* AST.c */
 AST *makeAST(enum ASTtype type, AST *left, AST *right);
 AST *makeSymAST(char *name);
+AST *makeNumAST(int value);
 AST *addList(AST *ast, AST *p);
 AST *getList(AST *ast, int num);
 AST *getNext(AST *ast);

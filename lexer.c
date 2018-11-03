@@ -1,4 +1,6 @@
 /* lexer.c */
+#include <ctype.h>
+
 char yytext[100];
 
 int yylex() {
@@ -8,6 +10,11 @@ again:
     c = getc(stdin);
     if(isspace(c)) goto again;
     switch(c){
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '=':
     case '(':
     case ')':
     case '{':

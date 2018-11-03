@@ -57,6 +57,15 @@ AST *makeSymAST(char *name) {
     return p;
 }
 
+AST *makeNumAST(int value) {
+    AST *p;
+
+    p = (AST *)malloc(sizeof(AST));
+    p->type = numOp;
+    p->val = value;
+    return p;
+}
+
 Symbol *searchSymbol(char *name) {
     Symbol *sp = NULL;
 
