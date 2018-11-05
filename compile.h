@@ -1,3 +1,4 @@
+#include "AST.h"
 #define MAX_LVARS 100
 
 typedef struct LocalVariable {
