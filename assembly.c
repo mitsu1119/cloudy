@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "compile.h"
 
+#define __ASM_DEBUG_MODE
+
 #define MAX_CODES 100
 
 struct _Code {
@@ -58,6 +60,17 @@ int tmpRegState[N_REG];
 
 // 退避領域の仮想レジスタ
 int tmpRegSave[N_SAVE];
+
+// prototype
+void initTmpReg();
+int getFreeReg(int rs);
+void assignReg(int rs, int reg);
+void freeReg(int reg);
+void saveReg(int reg);
+void saveAllReg();
+int appReg(int rs);
+void funcAsm(char *name, int codeSize);
+void compilePivot(int opcode, int opd1, int opd2, int opd3);
 
 void initTmpReg() {
     int i;
@@ -120,7 +133,7 @@ int appReg(int rs) {
 
     for(i=0; i<N_SAVE; i++) {
         if(tmpRegSave[i] == rs) {
-            r = getReg(rs);
+            r = getFreeReg(rs);
             tmpRegSave[i] = -1;
             printf("\tmov\t%s,[ebp%d]\n", TMPVAR_OFF(i), tmpRegName[r]);
             return r;
@@ -129,13 +142,29 @@ int appReg(int rs) {
     fprintf(stderr, "register is not found\n");
 }
 
-void funcAsm(char *name) {
+void funcAsm(char *name, int codeSize) {
     int i;
 
     puts(".text");                                      /* .text */
     printf("%s:\n", name);                              /* name: */
 
-    puts("push\tebp");      // push ebp
-    puts("mov\tebp, esp");  // mov ebp, esp
-    puts("sub\tesp, 4");    // sub esp, 4
+    puts("\tpush\tebp");      // push ebp
+    puts("\tmov\tebp, esp");  // mov ebp, esp
+    puts("\tsub\tesp, 4");    // sub esp, 4
+
+    initTmpReg();
+    for(i=0; i<codeSize; i++) {
+        compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3);
+    }
+
+    // return
+    printf("\tleave\n");
+    printf("\tret\n");
+}
+
+void compilePivot(int opcode, int opd1, int opd2, int opd3) {
+    #ifdef __ASM_DEBUG_MODE
+    printf("[d] %s %d %d\n", getPivotName(opcode), opd1, opd2, opd3);
+    #endif
+    return;
 }

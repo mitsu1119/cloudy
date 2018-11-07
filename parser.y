@@ -4,7 +4,7 @@
 %{
 #include "AST.h"
 
-#define __DEBUG_MODE
+#define __PARSER_DEBUG_MODE
 %}
 
 %union {
@@ -31,7 +31,7 @@ external_definitions:
 external_definition:
 	SYMBOL '(' ')' block
     { defineFunction(getSymbol($1), NULL);
-	#ifdef __DEBUG_MODE
+	#ifdef __PARSER_DEBUG_MODE
 	printf("[*] defined function <%s>\n",getSymbol($1)->name);
 	#endif
 	}
