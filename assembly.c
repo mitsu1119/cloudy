@@ -46,25 +46,18 @@ void genCode3(int opcode, int operand1, int operand2, int operand3) {
 #define ECX 2
 #define EDX 3
 
+// 新しく変数を作るときにスタックのどこに作るかのオフセット
+#define TMPVAR_OFF(r) -((i+1)+1)*4
+
 char *tmpRegName[N_REG] = {"eax", "ebx", "ecx", "edx"};
 char *regAddressPrefix[4] = {"byte", "word", "unDefined", "dword"};
 
 // 実際のレジスタにどの仮想レジスタが割り当てられているか(なし:-1)
+// tmpRegState[0] == 2  : eax は退避領域の2番の値を指している
 int tmpRegState[N_REG];
 
-// 退避領域にどの仮想レジスタの値が対比されているか
+// 退避領域の仮想レジスタ
 int tmpRegSave[N_SAVE];
-
-void funcAsm(char *name) {
-    int i;
-
-    puts(".text");                                      /* .text */
-    printf("%s:\n", name);                              /* name: */
-
-    puts("push\tebp");      // push ebp
-    puts("mov\tebp, esp");  // mov ebp, esp
-    puts("sub\tesp, 4");    // sub esp, 4
-}
 
 void initTmpReg() {
     int i;
@@ -72,6 +65,7 @@ void initTmpReg() {
     for(i=0; i<N_SAVE; i++) tmpRegSave[i] = -1;
 }
 
+// 空いてるレジスタを探す
 int getFreeReg(int rs) {
     int i;
     for(i=0; i<N_REG; i++) {
@@ -83,6 +77,8 @@ int getFreeReg(int rs) {
     fprintf(stderr, "Free temp register is not found\n");
 }
 
+// 仮想レジスタrsを実レジスタregに無理やり割当
+// 特定のレジスタが必要な場合に使用(システムコールなど)
 void assignReg(int rs, int reg) {
     if(tmpRegState[reg] = rs) return;
     saveReg(reg);
@@ -93,7 +89,53 @@ void freeReg(int reg) {
     tmpRegState[reg] = -1;
 }
 
-saveReg(int reg) {
-    //レジスタの退避
-    // あとで書く
+// 実レジスタregを退避
+void saveReg(int reg) {
+    int i;
+
+    if(tmpRegState[reg] < 0) return;
+    for(i=0; i<N_SAVE; i++) {
+        if(tmpRegSave[i] < 0) {
+            // mov  [ebp-TMPVAR_OFF(reg)], edx など
+            printf("\tmov\t[ebp%d], %s\n", TMPVAR_OFF(reg), tmpRegName[reg]);
+            tmpRegSave[i] = tmpRegState[reg];
+            tmpRegState[reg] = -1;
+            return;
+        }
+    }
+    fprintf(stderr, "Free tmp register was not found\n");
+}
+
+void saveAllReg() {
+    int i;
+    for(i=0; i<N_REG; i++) saveReg(i);
+}
+
+// 仮想レジスタrsがどの実レジスタと対応しているか調べる
+// rsが退避領域にある => 実レジスタも入れ込む
+int appReg(int rs) {
+    int i, r;
+
+    for(i=0; i<N_REG; i++) if(tmpRegState[i] == rs) return i;
+
+    for(i=0; i<N_SAVE; i++) {
+        if(tmpRegSave[i] == rs) {
+            r = getReg(rs);
+            tmpRegSave[i] = -1;
+            printf("\tmov\t%s,[ebp%d]\n", TMPVAR_OFF(i), tmpRegName[r]);
+            return r;
+        }
+    }
+    fprintf(stderr, "register is not found\n");
+}
+
+void funcAsm(char *name) {
+    int i;
+
+    puts(".text");                                      /* .text */
+    printf("%s:\n", name);                              /* name: */
+
+    puts("push\tebp");      // push ebp
+    puts("mov\tebp, esp");  // mov ebp, esp
+    puts("sub\tesp, 4");    // sub esp, 4
 }
