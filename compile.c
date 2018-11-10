@@ -2,21 +2,40 @@
 #include "compile.h"
 #include "pivotCode.h"
 
+/*
 int LVarp;
 LVar lvars[MAX_LVARS];
+*/
 
 int tmpCnt = 0;
 
 void defineFunction(Symbol *sym, AST *body) {
     asmIni();
     pivotStatement(body);
-    funcAsm(sym->name);
+    funcAsm(sym->name, NULL);
 }
+
+/*
+void pivotStoreVar(Symbol *var, int r) {
+    int i;
+
+    for(i = 0; i<LVarp; i++) {
+        if(lvars[i].var == var) {
+            switch(lvars[i].varType) {
+            case LOCAL_VAR:
+                genCode2(STOREL, r, lvars[i].pos);
+                return;            
+            }
+        }
+    }
+    fprintf(stderr, "undefinded variable\n");
+}
+*/
 
 void pivotStatement(AST *stat) {
     if(stat == NULL) return;
     switch(stat->type) {
-    case blockSt:
+    case blockSt:    
         pivotBlock(stat->left);
         break;
     default:
@@ -27,7 +46,7 @@ void pivotStatement(AST *stat) {
 void pivotBlock(AST *body) {
     while(body != NULL) {
         pivotStatement(getList(body,0));
-        getNext(body);
+        body = getNext(body);
     }
 }
 
@@ -67,6 +86,12 @@ void pivotExpr(int target, AST *p) {
         pivotExpr(r2, p->right);
         genCode3(DIV, target, r1, r2);
         return;
+/*    case eqOp:
+        if(target != -1) error("assign has no value");
+        r1 = tmpCnt++;
+        pivotExpr(r1, p->right);
+        pivotStoreVar(getSymbol(p->left), r1);
+        return;*/
     default:
         fprintf(stderr, "wrong expr\n");
         exit(1);

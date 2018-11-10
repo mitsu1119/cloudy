@@ -69,7 +69,7 @@ void freeReg(int reg);
 void saveReg(int reg);
 void saveAllReg();
 int appReg(int rs);
-void funcAsm(char *name, int codeSize);
+void funcAsm(char *name, int localvarSize);
 void compilePivot(int opcode, int opd1, int opd2, int opd3);
 
 void initTmpReg() {
@@ -142,7 +142,7 @@ int appReg(int rs) {
     fprintf(stderr, "register is not found\n");
 }
 
-void funcAsm(char *name, int codeSize) {
+void funcAsm(char *name, int localvarSize) {
     int i;
 
     puts(".text");                                      /* .text */
@@ -153,7 +153,7 @@ void funcAsm(char *name, int codeSize) {
     puts("\tsub\tesp, 4");    // sub esp, 4
 
     initTmpReg();
-    for(i=0; i<codeSize; i++) {
+    for(i=0; i<codecnt; i++) {
         compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3);
     }
 

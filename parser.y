@@ -30,7 +30,7 @@ external_definitions:
 
 external_definition:
 	SYMBOL '(' ')' block
-    { defineFunction(getSymbol($1), NULL);
+    { defineFunction(getSymbol($1), $4);
 	#ifdef __PARSER_DEBUG_MODE
 	printf("[*] defined function <%s>\n",getSymbol($1)->name);
 	#endif
@@ -59,7 +59,7 @@ statement:
 exp:
 	prim_exp
 	| SYMBOL '=' exp
-	{ makeAST(eqOp, $1, $3); }
+	{ $$ = makeAST(eqOp, $1, $3); }
 	;
 
 prim_exp:
