@@ -24,6 +24,17 @@ again:
     	return c;
     }
 
+    if(isdigit(c)) {    // 数値
+        n = 0;
+        do {
+            c = getc(stdin);
+            n = n*10 + c-'0';
+        } while(isdigit(c));
+        ungetc(c, stdin);
+        yylval.val = makeNumAST(n);
+        return NUMBER;
+    }
+
     if(isalpha(c)){        // / [A-Za-z]+ /
 	    p = yytext;
 	    do {
