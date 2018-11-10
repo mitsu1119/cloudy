@@ -36,7 +36,7 @@ AST *getList(AST *ast, int num) {
         fprintf(stderr, "bad list accessing\n");
         exit(1);
     }
-    if(num == 0) return ast->right;
+    if(num == 0) return ast->left;
     else return getList(ast->right, num-1);
 }
 
