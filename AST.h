@@ -39,3 +39,4 @@ Symbol *getSymbol(AST *ast);
 
 /* compile.c */
 void defineFunction(Symbol *sym, AST *body);
+void declareVar(Symbol *sym);

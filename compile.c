@@ -7,12 +7,19 @@ int LVarp;
 LVar lvars[MAX_LVARS];
 */
 
+GVar gvars[MAX_GVARS];
+int GVarp = 0;
+
 int tmpCnt = 0;
 
 void defineFunction(Symbol *sym, AST *body) {
     asmIni();
     pivotStatement(body);
     funcAsm(sym->name, NULL);
+}
+
+void declareVar(Symbol *sym) {
+    gvars[GVarp++].var = sym;
 }
 
 /*
@@ -85,6 +92,8 @@ void pivotExpr(int target, AST *p) {
         pivotExpr(r1, p->left);
         pivotExpr(r2, p->right);
         genCode3(DIV, target, r1, r2);
+        return;
+    case eqOp:
         return;
 /*    case eqOp:
         if(target != -1) error("assign has no value");

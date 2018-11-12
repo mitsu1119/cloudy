@@ -148,9 +148,9 @@ void funcAsm(char *name, int localvarSize) {
     puts(".text");                                      /* .text */
     printf("%s:\n", name);                              /* name: */
 
+    // create stack frame
     puts("\tpush\tebp");      // push ebp
     puts("\tmov\tebp, esp");  // mov ebp, esp
-    puts("\tsub\tesp, 4");    // sub esp, 4
 
     initTmpReg();
     for(i=0; i<codecnt; i++) {

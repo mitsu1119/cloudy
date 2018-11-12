@@ -1,5 +1,6 @@
 /* parser.y */
 %token SYMBOL NUMBER
+%token INT
 
 %{
 #include "AST.h"
@@ -34,6 +35,13 @@ external_definition:
 	#ifdef __PARSER_DEBUG_MODE
 	printf("[*] defined function <%s>\n",getSymbol($1)->name);
 	#endif
+	}
+	| INT SYMBOL ';'
+	{
+		declareVar(getSymbol($2));
+		#ifdef __PARSER_DEBUG_MODE
+		printf("[*] declared variable <%s>\n", getSymbol($2)->name);
+		#endif
 	}
 	;
 

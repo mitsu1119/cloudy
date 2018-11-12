@@ -43,6 +43,11 @@ again:
 	    } while(isalpha(c));
 	    *p = '\0';
 	    ungetc(c, stdin);
+
+        if(!strcmp(yytext, "int")) {
+            return INT;
+        }
+
 	    yylval.val = makeSymAST(yytext);
 	    return SYMBOL;
     }

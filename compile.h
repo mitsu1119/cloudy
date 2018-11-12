@@ -1,7 +1,13 @@
 #include "AST.h"
+
 #define MAX_LVARS 100
+#define MAX_GVARS 100
 
 #define LOCAL_VAR 0 // not argument
+
+typedef struct GlobalVariable {
+    Symbol *var;
+} GVar;
 
 typedef struct LocalVariable {
     Symbol *var;
