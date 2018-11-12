@@ -18,8 +18,13 @@ void defineFunction(Symbol *sym, AST *body) {
     funcAsm(sym->name, NULL);
 }
 
-void declareVar(Symbol *sym) {
-    gvars[GVarp++].var = sym;
+void declareVar(Symbol *sym, AST *value, int isBss) {
+    gvars[GVarp].var = sym;
+    gvars[GVarp].var->isBss = isBss;
+
+    // token NUMBER
+    if(isBss == FALSE) gvars[GVarp++].var->val = value->val;
+    else GVarp++;
 }
 
 /*

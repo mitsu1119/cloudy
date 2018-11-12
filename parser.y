@@ -38,9 +38,16 @@ external_definition:
 	}
 	| INT SYMBOL ';'
 	{
-		declareVar(getSymbol($2));
+		declareVar(getSymbol($2), NULL, TRUE);
 		#ifdef __PARSER_DEBUG_MODE
 		printf("[*] declared variable <%s>\n", getSymbol($2)->name);
+		#endif
+	}
+	| INT SYMBOL '=' NUMBER ';'
+	{
+		declareVar(getSymbol($2), $4, FALSE);
+		#ifdef __PARSER_DEBUG_MODE
+		printf("[*] declared data variable <%s,%d>\n", getSymbol($2)->name, $4->val);
 		#endif
 	}
 	;

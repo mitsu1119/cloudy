@@ -4,6 +4,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define FALSE 0
+#define TRUE 1
+
 enum ASTtype {
     eqOp, addOp, subOp, mulOp, divOp, symOp, numOp, blockSt, retSt, listAST
 };
@@ -17,6 +20,8 @@ typedef struct _AST {
 
 typedef struct _Symbol {
     char *name;
+    int val;
+    int isBss;
     AST *funcBody;
 } Symbol;
 
@@ -39,4 +44,4 @@ Symbol *getSymbol(AST *ast);
 
 /* compile.c */
 void defineFunction(Symbol *sym, AST *body);
-void declareVar(Symbol *sym);
+void declareVar(Symbol *sym, AST *value, int isBss);

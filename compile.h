@@ -9,6 +9,9 @@ typedef struct GlobalVariable {
     Symbol *var;
 } GVar;
 
+extern GVar gvars[];
+extern int GVarp;
+
 typedef struct LocalVariable {
     Symbol *var;
     int varType;
