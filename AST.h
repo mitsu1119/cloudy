@@ -7,6 +7,12 @@
 #define FALSE 0
 #define TRUE 1
 
+// eqOp, addOp, subOp, mulOp, divOp => [L] exp  [R] exp
+// symOp => symbol
+// numOp => value
+// blockSt => [L] bodyStatements  [R] localvars
+// retSt => ?
+// listAST => [L] factor  [R] nextList
 enum ASTtype {
     eqOp, addOp, subOp, mulOp, divOp, symOp, numOp, blockSt, retSt, listAST
 };

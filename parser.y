@@ -5,14 +5,14 @@
 %{
 #include "AST.h"
 
-#define __PARSER_DEBUG_MODE
+//#define __PARSER_DEBUG_MODE
 %}
 
 %union {
     AST *val;
 }
 
-%type <val> block
+%type <val> lvars symbol_list block
 %type <val> SYMBOL NUMBER
 %type <val> statements statement exp prim_exp
 
@@ -37,24 +37,36 @@ external_definition:
 	#endif
 	}
 	| INT SYMBOL ';'
-	{
-		declareVar(getSymbol($2), NULL, TRUE);
-		#ifdef __PARSER_DEBUG_MODE
-		printf("[*] declared variable <%s>\n", getSymbol($2)->name);
-		#endif
+	{ declareVar(getSymbol($2), NULL, TRUE);
+	#ifdef __PARSER_DEBUG_MODE
+	printf("[*] declared variable <%s>\n", getSymbol($2)->name);
+	#endif
 	}
 	| INT SYMBOL '=' NUMBER ';'
-	{
-		declareVar(getSymbol($2), $4, FALSE);
-		#ifdef __PARSER_DEBUG_MODE
-		printf("[*] declared data variable <%s,%d>\n", getSymbol($2)->name, $4->val);
-		#endif
+	{ declareVar(getSymbol($2), $4, FALSE);
+	#ifdef __PARSER_DEBUG_MODE
+	printf("[*] declared data variable <%s,%d>\n", getSymbol($2)->name, $4->val);
+	#endif
 	}
 	;
 
 block:
-    '{' statements '}'
-    { $$ = makeAST(blockSt, $2, NULL); }
+    '{' lvars statements '}'
+    { $$ = makeAST(blockSt, $3, $2); }
+	;
+
+lvars:
+	/* NULL */
+	{ $$ = NULL; }
+	| INT symbol_list ';'
+	{ $$ = $2; }
+	;
+
+symbol_list:
+	SYMBOL
+	{ $$ = makeAST(listAST, $1, NULL); }
+	| symbol_list ',' SYMBOL
+	{ $$ = addList($1,$3); }
 	;
 
 statements:

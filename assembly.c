@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "compile.h"
 
-#define __ASM_DEBUG_MODE
+//#define __ASM_DEBUG_MODE
 
 #define MAX_CODES 100
 
