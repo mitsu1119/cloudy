@@ -9,17 +9,19 @@ typedef struct GlobalVariable {
     Symbol *var;
 } GVar;
 
-extern GVar gvars[];
-extern int GVarp;
-
 typedef struct LocalVariable {
     Symbol *var;
     int varType;
     int pos;
 } LVar;
 
+extern GVar gvars[];
+extern int GVarp;
+extern LVar lvars[];
+extern int LVarp;
+
 void pivotStatement(AST *stat);
-void pivotBlock(AST *body);
+void pivotBlock(AST *body, AST *localvars);
 void pivotExpr(int target, AST *p);
 
 void initAssemble();

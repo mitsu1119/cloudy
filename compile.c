@@ -2,13 +2,11 @@
 #include "compile.h"
 #include "pivotCode.h"
 
-/*
-int LVarp;
-LVar lvars[MAX_LVARS];
-*/
-
 GVar gvars[MAX_GVARS];
 int GVarp = 0;
+
+LVar lvars[MAX_LVARS];
+int LVarp;
 
 int tmpCnt = 0;
 
@@ -48,14 +46,14 @@ void pivotStatement(AST *stat) {
     if(stat == NULL) return;
     switch(stat->type) {
     case blockSt:    
-        pivotBlock(stat->left);
+        pivotBlock(stat->left, stat->right);
         break;
     default:
         pivotExpr(-1, stat);
     };
 }
 
-void pivotBlock(AST *body) {
+void pivotBlock(AST *body, AST *localvars) {
     while(body != NULL) {
         pivotStatement(getList(body,0));
         body = getNext(body);

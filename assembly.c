@@ -17,7 +17,23 @@ void initAssemble() {
 
 // 関数のアセンブルの初期化関数
 void asmIni() {
+    int i;
+
     codecnt = 0;
+    LVarp = 0;
+
+    // 関数のコードを生成する前にグローバル変数を宣言、定義
+    if(GVarp > 0) {
+        puts("section .data");       // section .data
+        for(i=0; i<GVarp; i++) {
+            if(gvars[i].var->isBss == FALSE) printf("\t%s\tdd\t%d\n", gvars[i].var->name, gvars[i].var->val);          // varname dd  value
+        }
+        printf("section .bss\n");   // section .bss
+        for(i=0; i<GVarp; i++) {
+            if(gvars[i].var->isBss == TRUE) printf("\t%s\tresb\t4\n", gvars[i].var->name);      // varname  resb    4
+        }
+    }
+    GVarp = 0;
 }
 
 void genCode1(int opcode, int operand1) {
@@ -144,19 +160,6 @@ int appReg(int rs) {
 
 void funcAsm(char *name, int localvarSize) {
     int i;
-
-    // 関数のコードを生成する前にグローバル変数を宣言、定義
-    if(GVarp > 0) {
-        puts("section .data");       // section .data
-        for(i=0; i<GVarp; i++) {
-            if(gvars[i].var->isBss == FALSE) printf("\t%s\tdd\t%d\n", gvars[i].var->name, gvars[i].var->val);          // varname dd  value
-        }
-        printf("\nsection .bss\n");   // section .bss
-        for(i=0; i<GVarp; i++) {
-            if(gvars[i].var->isBss == TRUE) printf("\t%s\tresb\t4\n", gvars[i].var->name);      // varname  resb    4
-        }
-        printf("\n");
-    }
 
     puts("section .text");                                      // section .text
     printf("%s:\n", name);                              // name: 
