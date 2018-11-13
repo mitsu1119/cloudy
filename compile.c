@@ -6,12 +6,17 @@ GVar gvars[MAX_GVARS];
 int GVarp = 0;
 
 LVar lvars[MAX_LVARS];
-int LVarp;
+int LVarp = 0;
+int LVarpFunc;
 
 int tmpCnt = 0;
 
 void defineFunction(Symbol *sym, AST *body) {
     asmIni();
+
+    LVarp = 0;
+    LVarpFunc = 0;
+
     pivotStatement(body);
     funcAsm(sym->name, NULL);
 }
@@ -54,6 +59,18 @@ void pivotStatement(AST *stat) {
 }
 
 void pivotBlock(AST *body, AST *localvars) {
+    int LVarpStart = LVarp;
+
+    // ローカル変数の処理
+    while(localvars != NULL) {
+        lvars[LVarp].var = getSymbol(getList(localvars,0));
+        lvars[LVarp].varType = LOCAL_VAR;
+        lvars[LVarp++].pos = LVarpFunc++;
+        localvars = getNext(localvars);
+
+        printf("declare localvar: %s\n", lvars[LVarp-1].var->name);
+    }
+
     while(body != NULL) {
         pivotStatement(getList(body,0));
         body = getNext(body);

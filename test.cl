@@ -3,9 +3,8 @@ int a = 2;
 int b;
 
 main() {
-    a = 3;
-}
+    int c, d;
+    int e;
 
-test() {
-    b = 3;
+    a = 3;
 }
