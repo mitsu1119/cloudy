@@ -28,7 +28,7 @@ AST *addList(AST *ast, AST *p) {
     while(ret->right != NULL) ret = ret->right;
     ret->right = makeAST(listAST, p, NULL);
 
-    return ret;
+    return ast;
 }
 
 AST *getList(AST *ast, int num) {

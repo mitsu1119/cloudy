@@ -18,7 +18,9 @@ void defineFunction(Symbol *sym, AST *body) {
     LVarpFunc = 0;
 
     pivotStatement(body);
-    funcAsm(sym->name, NULL);
+    funcAsm(sym->name, LVarpFunc);
+
+    LVarp = 0;
 }
 
 void declareVar(Symbol *sym, AST *value, int isBss) {
@@ -65,16 +67,16 @@ void pivotBlock(AST *body, AST *localvars) {
     while(localvars != NULL) {
         lvars[LVarp].var = getSymbol(getList(localvars,0));
         lvars[LVarp].varType = LOCAL_VAR;
+        // printf("[*] declare localvar: %s\n", lvars[LVarp].var->name);
         lvars[LVarp++].pos = LVarpFunc++;
         localvars = getNext(localvars);
-
-        printf("declare localvar: %s\n", lvars[LVarp-1].var->name);
     }
 
     while(body != NULL) {
         pivotStatement(getList(body,0));
         body = getNext(body);
     }
+    LVarp = LVarpStart;
 }
 
 void pivotExpr(int target, AST *p) {

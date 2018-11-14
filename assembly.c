@@ -160,6 +160,7 @@ int appReg(int rs) {
 
 void funcAsm(char *name, int localvarSize) {
     int i;
+    int stackFrameSize;
 
     puts("section .text");                                      // section .text
     printf("%s:\n", name);                              // name: 
@@ -167,6 +168,7 @@ void funcAsm(char *name, int localvarSize) {
     // create stack frame
     puts("\tpush\tebp");      // push ebp
     puts("\tmov\tebp, esp");  // mov ebp, esp
+    if(localvarSize != 0) printf("\tsub\tesp, %d\n", localvarSize*4);
 
     initTmpReg();
     for(i=0; i<codecnt; i++) {
@@ -174,8 +176,9 @@ void funcAsm(char *name, int localvarSize) {
     }
 
     // return
-    printf("\tleave\n");
-    printf("\tret\n");
+    printf("\tmov\tesp, ebp\n");    // mov esp,ebp
+    printf("\tpop\tebp\n");         // pop ebp
+    printf("\tret\n");              // ret
 }
 
 void compilePivot(int opcode, int opd1, int opd2, int opd3) {
