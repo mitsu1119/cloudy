@@ -4,5 +4,8 @@ int b;
 
 main() {
     int c, d, e;
-    a = 3;
+    c = 3;
+    d = 3;
+    e = 21;
+    d = 54;
 }

@@ -32,7 +32,6 @@ void declareVar(Symbol *sym, AST *value, int isBss) {
     else GVarp++;
 }
 
-/*
 void pivotStoreVar(Symbol *var, int r) {
     int i;
 
@@ -47,7 +46,6 @@ void pivotStoreVar(Symbol *var, int r) {
     }
     fprintf(stderr, "undefinded variable\n");
 }
-*/
 
 void pivotStatement(AST *stat) {
     if(stat == NULL) return;
@@ -116,13 +114,11 @@ void pivotExpr(int target, AST *p) {
         genCode3(DIV, target, r1, r2);
         return;
     case eqOp:
-        return;
-/*    case eqOp:
-        if(target != -1) error("assign has no value");
+        if(target != -1) fprintf(stderr, "assign has no value");
         r1 = tmpCnt++;
         pivotExpr(r1, p->right);
         pivotStoreVar(getSymbol(p->left), r1);
-        return;*/
+        return;
     default:
         fprintf(stderr, "wrong expr\n");
         exit(1);

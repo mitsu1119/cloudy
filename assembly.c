@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "compile.h"
+#include "pivotCode.h"
 
-//#define __ASM_DEBUG_MODE
+// #define __ASM_DEBUG_MODE
 
 #define MAX_CODES 100
 
@@ -64,8 +65,9 @@ void genCode3(int opcode, int operand1, int operand2, int operand3) {
 #define ECX 2
 #define EDX 3
 
-// 新しく変数を作るときにスタックのどこに作るかのオフセット
-#define TMPVAR_OFF(r) -((i+1)+1)*4
+// 変数のオフセット計算
+#define LOCALVAR_OFF(pos) -(pos+1)*4
+#define TMPVAR_OFF(r) -i*4
 
 char *tmpRegName[N_REG] = {"eax", "ebx", "ecx", "edx"};
 char *regAddressPrefix[4] = {"byte", "word", "unDefined", "dword"};
@@ -97,6 +99,7 @@ void initTmpReg() {
 // 空いてるレジスタを探す
 int getFreeReg(int rs) {
     int i;
+
     for(i=0; i<N_REG; i++) {
         if(tmpRegState[i] < 0) {
             tmpRegState[i] = rs;
@@ -133,6 +136,7 @@ void saveReg(int reg) {
         }
     }
     fprintf(stderr, "Free tmp register was not found\n");
+    exit(1);
 }
 
 void saveAllReg() {
@@ -156,6 +160,7 @@ int appReg(int rs) {
         }
     }
     fprintf(stderr, "register is not found\n");
+    exit(1);
 }
 
 void funcAsm(char *name, int localvarSize) {
@@ -182,8 +187,23 @@ void funcAsm(char *name, int localvarSize) {
 }
 
 void compilePivot(int opcode, int opd1, int opd2, int opd3) {
+    int reg;
+    
     #ifdef __ASM_DEBUG_MODE
     printf("[d] %s %d %d\n", getPivotName(opcode), opd1, opd2, opd3);
     #endif
+
+    switch(opcode) {
+    case LOADI:     // load integer
+        if(opd1 < 0) return;
+        reg = getFreeReg(opd1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg], opd2);
+        return;
+    case STOREL:    // store local variable
+        reg = appReg(opd1);
+        freeReg(reg);
+	    printf("\tmov\t[ebp%d], %s\n", LOCALVAR_OFF(opd2), tmpRegName[reg]);
+        return;        
+    }
     return;
 }
