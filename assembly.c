@@ -112,7 +112,7 @@ int getFreeReg(int rs) {
 // 仮想レジスタrsを実レジスタregに無理やり割当
 // 特定のレジスタが必要な場合に使用(システムコールなど)
 void assignReg(int rs, int reg) {
-    if(tmpRegState[reg] = rs) return;
+    if(tmpRegState[reg] == rs) return;
     saveReg(reg);
     tmpRegState[reg] = rs;
 }
@@ -187,7 +187,7 @@ void funcAsm(char *name, int localvarSize) {
 }
 
 void compilePivot(int opcode, int opd1, int opd2, int opd3) {
-    int reg;
+    int reg1, reg2;
     
     #ifdef __ASM_DEBUG_MODE
     printf("[d] %s %d %d\n", getPivotName(opcode), opd1, opd2, opd3);
@@ -196,14 +196,50 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
     switch(opcode) {
     case LOADI:     // load integer
         if(opd1 < 0) return;
-        reg = getFreeReg(opd1);
-        printf("\tmov\t%s, %d\n", tmpRegName[reg], opd2);
+        reg1 = getFreeReg(opd1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg1], opd2);
         return;
     case STOREL:    // store local variable
-        reg = appReg(opd1);
-        freeReg(reg);
-	    printf("\tmov\t[ebp%d], %s\n", LOCALVAR_OFF(opd2), tmpRegName[reg]);
-        return;        
+        reg1 = appReg(opd1);
+        freeReg(reg1);
+	    printf("\tmov\t[ebp%d], %s\n", LOCALVAR_OFF(opd2), tmpRegName[reg1]);
+        return;
+    case ADD:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        assignReg(opd1, reg1);
+        printf("\tadd\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        return;
+    case SUB:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        assignReg(opd1, reg1);
+        printf("\tsub\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        return;
+    case MUL:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        assignReg(opd1, reg1);
+        printf("\tmul\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        return;
+    case DIV:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        assignReg(opd1, reg1);
+        printf("\tdiv\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        return;
     }
     return;
 }

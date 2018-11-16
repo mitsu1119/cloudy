@@ -87,6 +87,14 @@ exp:
 	prim_exp
 	| SYMBOL '=' exp
 	{ $$ = makeAST(eqOp, $1, $3); }
+	| exp '+' exp
+	{ $$ = makeAST(addOp, $1, $3); }
+	| exp '-' exp
+	{ $$ = makeAST(subOp, $1, $3); }
+	| exp '*' exp
+	{ $$ = makeAST(mulOp, $1, $3); }
+	| exp '/' exp
+	{ $$ = makeAST(divOp, $1, $3); }
 	;
 
 prim_exp:
