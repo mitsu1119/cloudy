@@ -228,8 +228,10 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
         freeReg(reg1);
         freeReg(reg2);
         if(opd1 < 0) return;
-        assignReg(opd1, reg1);
-        printf("\tmul\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+	    assignReg(opd1, EAX);
+        saveReg(EDX);
+        if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
+        printf("\tmul\t%s\n", tmpRegName[reg2]);
         return;
     case DIV:
         reg1 = appReg(opd2);
@@ -237,8 +239,11 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
         freeReg(reg1);
         freeReg(reg2);
         if(opd1 < 0) return;
-        assignReg(opd1, reg1);
-        printf("\tdiv\t%s, %s\n", tmpRegName[reg1], tmpRegName[reg2]);
+	    assignReg(opd1, EAX);
+        saveReg(EDX);
+        if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
+        printf("\tdiv\t%s\n", tmpRegName[reg2]);
+        return;
         return;
     }
     return;
