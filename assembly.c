@@ -66,8 +66,9 @@ void genCode3(int opcode, int operand1, int operand2, int operand3) {
 #define EDX 3
 
 // 変数のオフセット計算
-#define LOCALVAR_OFF(pos) -(pos+1)*4
-#define TMPVAR_OFF(r) -i*4
+// 退避領域は ebp-4, ebp-8, ebp-12, ebp-16, ..., ebp-(N_SAVE*4) まで 
+#define LOCALVAR_OFF(pos) -(pos+1+N_SAVE)*4 // ebpから
+#define TMPVAR_OFF(r) -(r+1)*4      // ローカル変数の先頭から
 
 char *tmpRegName[N_REG] = {"eax", "ebx", "ecx", "edx"};
 char *regAddressPrefix[4] = {"byte", "word", "unDefined", "dword"};
@@ -155,7 +156,7 @@ int appReg(int rs) {
         if(tmpRegSave[i] == rs) {
             r = getFreeReg(rs);
             tmpRegSave[i] = -1;
-            printf("\tmov\t%s,[ebp%d]\n", TMPVAR_OFF(i), tmpRegName[r]);
+            printf("\tmov\t%s, [ebp%d]\n", tmpRegName[r], TMPVAR_OFF(i));
             return r;
         }
     }
@@ -173,7 +174,7 @@ void funcAsm(char *name, int localvarSize) {
     // create stack frame
     puts("\tpush\tebp");      // push ebp
     puts("\tmov\tebp, esp");  // mov ebp, esp
-    if(localvarSize != 0) printf("\tsub\tesp, %d\n", localvarSize*4);
+    printf("\tsub\tesp, %d\n", (localvarSize+N_SAVE)*4);
 
     initTmpReg();
     for(i=0; i<codecnt; i++) {
@@ -243,7 +244,6 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
         saveReg(EDX);
         if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
         printf("\tdiv\t%s\n", tmpRegName[reg2]);
-        return;
         return;
     }
     return;

@@ -2,6 +2,9 @@
 %token SYMBOL NUMBER
 %token INT
 
+%left '+' '-'
+%left '*' '/'
+
 %{
 #include "AST.h"
 
