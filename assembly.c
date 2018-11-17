@@ -232,6 +232,7 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
 	    assignReg(opd1, EAX);
         saveReg(EDX);
         if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
+        printf("\txor\t%s, %s\n", tmpRegName[EDX], tmpRegName[EDX]);
         printf("\tmul\t%s\n", tmpRegName[reg2]);
         return;
     case DIV:
@@ -243,6 +244,7 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
 	    assignReg(opd1, EAX);
         saveReg(EDX);
         if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
+        printf("\txor\t%s, %s\n", tmpRegName[EDX], tmpRegName[EDX]);
         printf("\tdiv\t%s\n", tmpRegName[reg2]);
         return;
     }
