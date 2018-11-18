@@ -1,5 +1,5 @@
 /* parser.y */
-%token SYMBOL NUMBER
+%token SYMBOL NUMBER STRING
 %token INT
 
 %left '+' '-'
@@ -16,7 +16,7 @@
 }
 
 %type <val> lvars symbol_list block
-%type <val> SYMBOL NUMBER
+%type <val> SYMBOL NUMBER STRING
 %type <val> statements statement exp prim_exp
 
 %start program
@@ -103,6 +103,8 @@ exp:
 prim_exp:
 	SYMBOL
 	| NUMBER
+	| STRING
+	{ printf("string %s\n", $1->str); }
 	;
 
 %%

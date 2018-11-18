@@ -8,8 +8,13 @@
 
 struct _Code {
     int opcode, operand1, operand2, operand3;
+    char *operandStr;
 } codes[MAX_CODES];
 int codecnt;
+
+int labelcnt = 0;
+
+void asmGVar();
 
 // アセンブラ起動時の初期化関数
 void initAssemble() {
@@ -25,16 +30,28 @@ void asmIni() {
 
     // 関数のコードを生成する前にグローバル変数を宣言、定義
     if(GVarp > 0) {
-        puts("section .data");       // section .data
-        for(i=0; i<GVarp; i++) {
-            if(gvars[i].var->isBss == FALSE) printf("\t%s\tdd\t%d\n", gvars[i].var->name, gvars[i].var->val);          // varname dd  value
-        }
-        printf("section .bss\n");   // section .bss
-        for(i=0; i<GVarp; i++) {
-            if(gvars[i].var->isBss == TRUE) printf("\t%s\tresb\t4\n", gvars[i].var->name);      // varname  resb    4
-        }
+        asmGVar();
+    }
+}
+
+void asmGVar() {
+    int i;
+
+    puts("section .data");  // section .data
+    for(i=0; i<GVarp; i++) {
+        if(gvars[i].var->isBss == FALSE) printf("\t%s\tdd\t%d\n", gvars[i].var->name, gvars[i].var->val);   // varname dd value
+    }
+    puts("section .bss");   // section .bss
+    for(i=0; i<GVarp; i++) {
+        if(gvars[i].var->isBss == TRUE) printf("\t%s\tresb\t4\n", gvars[i].var->name);  // varname resb 4
     }
     GVarp = 0;
+}
+
+void asmString(char *s) {
+    puts("section .rodata");
+    printf(".LC%d:\n", labelcnt++);
+    printf("\tdb\t'%s'\n",s);
 }
 
 void genCode1(int opcode, int operand1) {
@@ -53,6 +70,13 @@ void genCode3(int opcode, int operand1, int operand2, int operand3) {
     codes[codecnt].operand1 = operand1;
     codes[codecnt].operand2 = operand2;
     codes[codecnt++].operand3 = operand3;
+}
+
+void genCodeS(int opcode, int operand1, int operand2, char *operands) {
+    codes[codecnt].opcode = opcode;
+    codes[codecnt].operand1 = operand1;
+    codes[codecnt].operand2 = operand2;
+    codes[codecnt++].operandStr = operands;
 }
 
 /* *** Assemble *** */

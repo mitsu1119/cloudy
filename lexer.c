@@ -23,6 +23,14 @@ again:
     case ';':
     case EOF:
     	return c;
+    case '"':
+        p = yytext;
+        while((c = getc(stdin)) != '"') {
+            *p++ = c;
+        }
+        *p = '\0';
+        yylval.val = makeStrAST(strdup(yytext));
+        return STRING;
     }
 
     if(isdigit(c)) {    // 数値

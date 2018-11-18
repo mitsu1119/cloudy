@@ -66,6 +66,15 @@ AST *makeNumAST(int value) {
     return p;
 }
 
+AST *makeStrAST(char *str) {
+    AST *p;
+
+    p = (AST *)malloc(sizeof(AST));
+    p->type = strOp;
+    p->str = str;
+    return p;
+}
+
 Symbol *searchSymbol(char *name) {
     Symbol *sp = NULL;
 
