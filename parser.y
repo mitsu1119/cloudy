@@ -105,6 +105,8 @@ prim_exp:
 	| NUMBER
 	| STRING
 	{ printf("string %s\n", $1->str); }
+	| SYMBOL '(' ')'
+	{ $$ = makeAST(callOp, $1, NULL); }
 	;
 
 %%

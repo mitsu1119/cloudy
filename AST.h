@@ -8,13 +8,14 @@
 #define TRUE 1
 
 // eqOp, addOp, subOp, mulOp, divOp => [L] exp  [R] exp
+// callOp => [L] symbol
 // symOp => symbol
 // numOp => value
 // blockSt => [L] bodyStatements  [R] localvars
 // retSt => ?
 // listAST => [L] factor  [R] nextList
 enum ASTtype {
-    eqOp, addOp, subOp, mulOp, divOp, symOp, numOp, strOp, blockSt, retSt, listAST
+    eqOp, addOp, subOp, mulOp, divOp, callOp, symOp, numOp, strOp, blockSt, retSt, listAST
 };
 
 typedef struct _AST {

@@ -113,7 +113,7 @@ void saveReg(int reg);
 void saveAllReg();
 int appReg(int rs);
 void funcAsm(char *name, int localvarSize);
-void compilePivot(int opcode, int opd1, int opd2, int opd3);
+void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS);
 
 void initTmpReg() {
     int i;
@@ -202,7 +202,7 @@ void funcAsm(char *name, int localvarSize) {
 
     initTmpReg();
     for(i=0; i<codecnt; i++) {
-        compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3);
+        compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3, codes[i].operandStr);
     }
 
     // return
@@ -211,7 +211,7 @@ void funcAsm(char *name, int localvarSize) {
     printf("\tret\n");              // ret
 }
 
-void compilePivot(int opcode, int opd1, int opd2, int opd3) {
+void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS) {
     int reg1, reg2;
     
     #ifdef __ASM_DEBUG_MODE
@@ -270,6 +270,11 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3) {
         if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
         printf("\txor\t%s, %s\n", tmpRegName[EDX], tmpRegName[EDX]);
         printf("\tdiv\t%s\n", tmpRegName[reg2]);
+        return;
+    case CALL:
+        saveAllReg();
+        printf("\tcall\t%s\n", opdS);
+        if(opd1 < 0) break; // 返り値を格納しない場合break
         return;
     }
     return;

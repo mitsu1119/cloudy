@@ -77,6 +77,10 @@ void pivotBlock(AST *body, AST *localvars) {
     LVarp = LVarpStart;
 }
 
+void pivotCall(int target, Symbol *sym) {
+    genCodeS(CALL, target, 0, sym->name);
+}
+
 void pivotExpr(int target, AST *p) {
     int r1, r2; // buf
     if(p == NULL) return;
@@ -118,6 +122,9 @@ void pivotExpr(int target, AST *p) {
         r1 = tmpCnt++;
         pivotExpr(r1, p->right);
         pivotStoreVar(getSymbol(p->left), r1);
+        return;
+    case callOp:
+        pivotCall(target, getSymbol(p->left));
         return;
     default:
         fprintf(stderr, "wrong expr\n");
