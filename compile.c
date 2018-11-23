@@ -53,6 +53,9 @@ void pivotStatement(AST *stat) {
     case blockSt:    
         pivotBlock(stat->left, stat->right);
         break;
+    case returnSt:
+        pivotReturn(stat->left);
+        break;
     default:
         pivotExpr(-1, stat);
     };
@@ -75,6 +78,10 @@ void pivotBlock(AST *body, AST *localvars) {
         body = getNext(body);
     }
     LVarp = LVarpStart;
+}
+
+void pivotReturn(AST *retValue) {
+    if(retValue == NULL) genCode1(RET, -1);
 }
 
 void pivotCall(int target, Symbol *sym) {

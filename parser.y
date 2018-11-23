@@ -1,6 +1,7 @@
 /* parser.y */
 %token SYMBOL NUMBER STRING
 %token INT
+%token RETURN
 
 %left '+' '-'
 %left '*' '/'
@@ -17,6 +18,7 @@
 
 %type <val> lvars symbol_list block
 %type <val> SYMBOL NUMBER STRING
+%type <val> RETURN
 %type <val> statements statement exp prim_exp
 
 %start program
@@ -84,6 +86,8 @@ statement:
 	{ $$ = $1; }
 	| block
 	{ $$ = $1; }
+	| RETURN ';'
+	{ $$ = makeAST(returnSt, NULL, NULL); }
 	;
 
 exp:

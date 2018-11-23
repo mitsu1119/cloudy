@@ -55,6 +55,8 @@ again:
 
         if(!strcmp(yytext, "int")) {
             return INT;
+        } else if(!strcmp(yytext, "return")) {
+            return RETURN;
         }
 
 	    yylval.val = makeSymAST(yytext);

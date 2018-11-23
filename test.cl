@@ -2,10 +2,14 @@
 func() {
     int x, y, z;
     x = 4;
+    y = 5;
+    return;
+    z = 6;
 }
 
 main() {
     int c, d, e, f;
-    c = 5;
+    c = 3;
     func();
+    d = 7;
 }

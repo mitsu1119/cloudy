@@ -113,7 +113,7 @@ void saveReg(int reg);
 void saveAllReg();
 int appReg(int rs);
 void funcAsm(char *name, int localvarSize);
-void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS);
+void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int returnLabel);
 
 void initTmpReg() {
     int i;
@@ -190,7 +190,7 @@ int appReg(int rs) {
 
 void funcAsm(char *name, int localvarSize) {
     int i;
-    int stackFrameSize;
+    int returnLabel = labelcnt++;
 
     puts("section .text");                                      // section .text
     printf("%s:\n", name);                              // name: 
@@ -202,16 +202,17 @@ void funcAsm(char *name, int localvarSize) {
 
     initTmpReg();
     for(i=0; i<codecnt; i++) {
-        compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3, codes[i].operandStr);
+        compilePivot(codes[i].opcode, codes[i].operand1, codes[i].operand2, codes[i].operand3, codes[i].operandStr, returnLabel);
     }
 
     // return
+    printf(".L%d:\n", returnLabel);
     printf("\tmov\tesp, ebp\n");    // mov esp,ebp
     printf("\tpop\tebp\n");         // pop ebp
     printf("\tret\n");              // ret
 }
 
-void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS) {
+void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int returnLabel) {
     int reg1, reg2;
     
     #ifdef __ASM_DEBUG_MODE
@@ -275,6 +276,12 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS) {
         saveAllReg();
         printf("\tcall\t%s\n", opdS);
         if(opd1 < 0) break; // 返り値を格納しない場合break
+        return;
+    case RET:
+        reg1 = appReg(opd1);
+        freeReg(reg1);
+        if(reg1 != EAX) printf("\tmov\teax, %s\n", tmpRegName[reg1]);
+        printf("\tjmp\t.L%d\n", returnLabel);
         return;
     }
     return;
