@@ -88,6 +88,8 @@ statement:
 	{ $$ = $1; }
 	| RETURN ';'
 	{ $$ = makeAST(returnSt, NULL, NULL); }
+	| RETURN exp ';'
+	{ $$ = makeAST(returnSt, $2, NULL); }
 	;
 
 exp:

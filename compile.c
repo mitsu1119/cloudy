@@ -81,7 +81,13 @@ void pivotBlock(AST *body, AST *localvars) {
 }
 
 void pivotReturn(AST *retValue) {
-    if(retValue == NULL) genCode1(RET, -1);
+    int reg;
+    if(retValue == NULL) reg = -1;
+    else {
+        reg = tmpCnt++;
+        pivotExpr(reg, retValue);
+    }
+    genCode1(RET, reg);
 }
 
 void pivotCall(int target, Symbol *sym) {

@@ -3,7 +3,7 @@ func() {
     int x, y, z;
     x = 4;
     y = 5;
-    return;
+    return 5;
     z = 6;
 }
 
