@@ -90,7 +90,7 @@ void genCodeS(int opcode, int operand1, int operand2, char *operands) {
 #define EDX 3
 
 // 変数のオフセット計算
-// 退避領域は ebp-4, ebp-8, ebp-12, ebp-16, ..., ebp-(N_SAVE*4) まで 
+// 退避領域は ebp-4, ebp-8, ebp-12, ebp-16, ..., ebp-(N_SAVE*4) まで
 #define LOCALVAR_OFF(pos) -(pos+1+N_SAVE)*4 // ebpから
 #define TMPVAR_OFF(r) -(r+1)*4      // ローカル変数の先頭から
 
@@ -193,7 +193,7 @@ void funcAsm(char *name, int localvarSize) {
     int returnLabel = labelcnt++;
 
     puts("section .text");                                      // section .text
-    printf("%s:\n", name);                              // name: 
+    printf("%s:\n", name);                              // name:
 
     // create stack frame
     puts("\tpush\tebp");      // push ebp
@@ -214,7 +214,7 @@ void funcAsm(char *name, int localvarSize) {
 
 void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int returnLabel) {
     int reg1, reg2;
-    
+
     #ifdef __ASM_DEBUG_MODE
     printf("[d] %s %d %d\n", getPivotName(opcode), opd1, opd2, opd3);
     #endif
@@ -224,6 +224,11 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         if(opd1 < 0) return;
         reg1 = getFreeReg(opd1);
         printf("\tmov\t%s, %d\n", tmpRegName[reg1], opd2);
+        return;
+    case LOADL:
+        if(opd1 < 0) return;
+        reg1 = getFreeReg(opd1);
+        printf("\tmov\t%s, [ebp%d]\n", tmpRegName[reg1], LOCALVAR_OFF(opd2));
         return;
     case STOREL:    // store local variable
         reg1 = appReg(opd1);

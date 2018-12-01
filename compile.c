@@ -40,17 +40,32 @@ void pivotStoreVar(Symbol *var, int r) {
             switch(lvars[i].varType) {
             case LOCAL_VAR:
                 genCode2(STOREL, r, lvars[i].pos);
-                return;            
+                return;
             }
         }
     }
     fprintf(stderr, "undefinded variable\n");
 }
 
+void pivotLoadvar(int target, Symbol *var) {
+    int i;
+    for(i=0; i<LVarp; i++) {
+        if(lvars[i].var == var) {
+            switch(lvars[i].varType) {
+            case LOCAL_VAR:
+                genCode2(LOADL, target, lvars[i].pos);
+                return;
+            }
+        }
+    }
+    fprintf(stderr, "wrong loadvar");
+    exit(1);
+}
+
 void pivotStatement(AST *stat) {
     if(stat == NULL) return;
     switch(stat->type) {
-    case blockSt:    
+    case blockSt:
         pivotBlock(stat->left, stat->right);
         break;
     case returnSt:
@@ -101,6 +116,9 @@ void pivotExpr(int target, AST *p) {
     switch(p->type) {
     case numOp:
         genCode2(LOADI, target, p->val);
+        return;
+    case symOp:
+        pivotLoadvar(target, getSymbol(p));
         return;
     case addOp:
         r1 = tmpCnt++;
