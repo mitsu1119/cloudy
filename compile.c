@@ -148,6 +148,20 @@ void pivotExpr(int target, AST *p) {
         pivotExpr(r2, p->right);
         genCode3(DIV, target, r1, r2);
         return;
+    case lessThanOp:
+        r1 = tmpCnt++;
+        r2 = tmpCnt++;
+        pivotExpr(r1, p->left);
+        pivotExpr(r2, p->right);
+        genCode3(LT, target, r1, r2);
+        return;
+    case greaterThanOp:
+        r1 = tmpCnt++;
+        r2 = tmpCnt++;
+        pivotExpr(r1, p->left);
+        pivotExpr(r2, p->right);
+        genCode3(GT, target, r1, r2);
+        return;
     case eqOp:
         if(target != -1) fprintf(stderr, "assign has no value");
         r1 = tmpCnt++;

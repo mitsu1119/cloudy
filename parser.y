@@ -1,7 +1,7 @@
 /* parser.y */
 %token SYMBOL NUMBER STRING
 %token INT
-%token RETURN
+%token RETURN IF
 
 %left '+' '-'
 %left '*' '/'
@@ -104,13 +104,17 @@ exp:
 	{ $$ = makeAST(mulOp, $1, $3); }
 	| exp '/' exp
 	{ $$ = makeAST(divOp, $1, $3); }
+	| exp '<' exp
+	{ $$ = makeAST(lessThanOp, $1, $3); }
+	| exp '>' exp
+	{ $$ = makeAST(greaterThanOp, $1, $3); }
 	;
 
 prim_exp:
 	SYMBOL
 	| NUMBER
 	| STRING
-	{ printf("string %s\n", $1->str); }
+	{ printf("prim_exp string %s\n", $1->str); }
 	| SYMBOL '(' ')'
 	{ $$ = makeAST(callOp, $1, NULL); }
 	;

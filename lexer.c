@@ -14,6 +14,8 @@ again:
     case '-':
     case '*':
     case '/':
+    case '>':
+    case '<':
     case '=':
     case '(':
     case ')':
@@ -57,6 +59,8 @@ again:
             return INT;
         } else if(!strcmp(yytext, "return")) {
             return RETURN;
+        } else if(!strcmp(yytext, "if")) {
+            return IF;
         }
 
 	    yylval.val = makeSymAST(yytext);

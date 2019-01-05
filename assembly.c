@@ -213,7 +213,8 @@ void funcAsm(char *name, int localvarSize) {
 }
 
 void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int returnLabel) {
-    int reg1, reg2;
+    int reg1, reg2, reg;
+    int label1, label2;
 
     #ifdef __ASM_DEBUG_MODE
     printf("[d] %s %d %d\n", getPivotName(opcode), opd1, opd2, opd3);
@@ -276,6 +277,40 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         if(reg1 != EAX) printf("\tmov\t%s,%s\n", tmpRegName[EAX], tmpRegName[reg1]);
         printf("\txor\t%s, %s\n", tmpRegName[EDX], tmpRegName[EDX]);
         printf("\tdiv\t%s\n", tmpRegName[reg2]);
+        return;
+    case LT:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        reg = getFreeReg(opd1);
+        label1 = labelcnt++;
+        label2 = labelcnt++;
+        printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        printf("\tjl .L%d\n", label1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
+        printf("\tjmp .L%d\n", label2);
+        printf(".L%d:\n", label1);
+        printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
+        printf(".L%d:", label2);
+        return;
+    case GT:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        reg = getFreeReg(opd1);
+        label1 = labelcnt++;
+        label2 = labelcnt++;
+        printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        printf("\tjg .L%d\n", label1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
+        printf("\tjmp .L%d\n", label2);
+        printf(".L%d:\n", label1);
+        printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
+        printf(".L%d:", label2);
         return;
     case CALL:
         saveAllReg();
