@@ -278,23 +278,6 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\txor\t%s, %s\n", tmpRegName[EDX], tmpRegName[EDX]);
         printf("\tdiv\t%s\n", tmpRegName[reg2]);
         return;
-    case LT:
-        reg1 = appReg(opd2);
-        reg2 = appReg(opd3);
-        freeReg(reg1);
-        freeReg(reg2);
-        if(opd1 < 0) return;
-        reg = getFreeReg(opd1);
-        label1 = labelcnt++;
-        label2 = labelcnt++;
-        printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
-        printf("\tjl .L%d\n", label1);
-        printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
-        printf("\tjmp .L%d\n", label2);
-        printf(".L%d:\n", label1);
-        printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
-        printf(".L%d:", label2);
-        return;
     case GT:
         reg1 = appReg(opd2);
         reg2 = appReg(opd3);
@@ -312,6 +295,29 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
         printf(".L%d:", label2);
         return;
+    case LT:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        reg = getFreeReg(opd1);
+        label1 = labelcnt++;
+        label2 = labelcnt++;
+        printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        printf("\tjl .L%d\n", label1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
+        printf("\tjmp .L%d\n", label2);
+        printf(".L%d:\n", label1);
+        printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
+        printf(".L%d:", label2);
+        return;
+    case BEQ0:
+        reg1 = appReg(opd1);
+        freeReg(reg1);
+        printf("\tcmp\t%s,%d\n", tmpRegName[reg1], 0);
+        printf("\tje\t.L%d\n", opd2);
+        return;
     case CALL:
         saveAllReg();
         printf("\tcall\t%s\n", opdS);
@@ -322,6 +328,9 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         freeReg(reg1);
         if(reg1 != EAX) printf("\tmov\teax, %s\n", tmpRegName[reg1]);
         printf("\tjmp\t.L%d\n", returnLabel);
+        return;
+    case LABEL:
+        printf(".L%d:\n", opd1);
         return;
     }
     return;

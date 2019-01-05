@@ -65,6 +65,9 @@ void pivotLoadvar(int target, Symbol *var) {
 void pivotStatement(AST *stat) {
     if(stat == NULL) return;
     switch(stat->type) {
+    case ifSt:
+        pivotIf(stat->left, stat->right);
+        break;
     case blockSt:
         pivotBlock(stat->left, stat->right);
         break;
@@ -107,6 +110,17 @@ void pivotReturn(AST *retValue) {
 
 void pivotCall(int target, Symbol *sym) {
     genCodeS(CALL, target, 0, sym->name);
+}
+
+void pivotIf(AST *condition, AST *body) {
+    int reg = tmpCnt++;
+    int label1;
+
+    pivotExpr(reg, condition);
+    label1 = labelcnt++;
+    genCode2(BEQ0, reg, label1);
+    pivotStatement(body);
+    genCode1(LABEL, label1);
 }
 
 void pivotExpr(int target, AST *p) {

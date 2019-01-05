@@ -5,6 +5,8 @@
 
 #define LOCAL_VAR 0 // not argument
 
+extern int labelcnt;
+
 typedef struct GlobalVariable {
     Symbol *var;
 } GVar;
@@ -23,6 +25,6 @@ extern int LVarp;
 void pivotStatement(AST *stat);
 void pivotBlock(AST *body, AST *localvars);
 void pivotExpr(int target, AST *p);
+void pivotIf(AST *condition, AST *body);
 
 void initAssemble();
-

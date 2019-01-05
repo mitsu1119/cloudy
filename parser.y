@@ -90,6 +90,8 @@ statement:
 	{ $$ = makeAST(returnSt, NULL, NULL); }
 	| RETURN exp ';'
 	{ $$ = makeAST(returnSt, $2, NULL); }
+	| IF '(' exp ')' block
+	{ $$ = makeAST(ifSt, $3, $5); }
 	;
 
 exp:

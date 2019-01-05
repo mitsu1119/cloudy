@@ -15,7 +15,7 @@
 // returnSt => [L] retvalue
 // listAST => [L] factor  [R] nextList
 enum ASTtype {
-    eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp, callOp, symOp, numOp, strOp, blockSt, returnSt, listAST
+    eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp, callOp, symOp, numOp, strOp, ifSt, blockSt, returnSt, listAST
 };
 
 typedef struct _AST {
