@@ -9,6 +9,14 @@ int yylex() {
 again:
     c = getc(stdin);
     if(isspace(c)) goto again;
+
+    if(c == '=') {
+        c = getc(stdin);
+        if(c == '=') return EQEQ;
+        ungetc(c, stdin);
+        return '=';
+    }
+
     switch(c){
     case '+':
     case '-':
@@ -16,7 +24,6 @@ again:
     case '/':
     case '>':
     case '<':
-    case '=':
     case '(':
     case ')':
     case '{':

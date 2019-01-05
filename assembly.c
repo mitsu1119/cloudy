@@ -312,6 +312,23 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
         printf(".L%d:", label2);
         return;
+    case EQEQ:
+        reg1 = appReg(opd2);
+        reg2 = appReg(opd3);
+        freeReg(reg1);
+        freeReg(reg2);
+        if(opd1 < 0) return;
+        reg = getFreeReg(opd1);
+        label1 = labelcnt++;
+        label2 = labelcnt++;
+        printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
+        printf("\tje .L%d\n", label1);
+        printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
+        printf("\tjmp .L%d\n", label2);
+        printf(".L%d:\n", label1);
+        printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
+        printf(".L%d:\n", label2);
+        return;
     case BEQ0:
         reg1 = appReg(opd1);
         freeReg(reg1);

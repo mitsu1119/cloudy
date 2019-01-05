@@ -11,19 +11,20 @@
 #define DIV     9   /* DIV t,r1,r2 */
 #define GT	    10 	/* GT  t,r1,r2 */
 #define LT	    11	/* LT  r,r1,r2 */
-#define BEQ0	12	/* BQ  r,L *//* branch if eq 0 */
-#define JUMP	13	/* JUMP L */
-#define ARG     14	/* ARG r,n *//* set Argument */
-#define CALL	15	/* CALL r,func */
-#define RET	    16	/* RET r *//* return */
-#define PRINTLN	17	/* PRINTLN r,L *//* println function */
-#define LABEL 	18	/* LABEL L *//* label */
+#define EQEQ    12  /* EQEQ r,r1,r2 */
+#define BEQ0	13	/* BQ  r,L *//* branch if eq 0 */
+#define JUMP	14	/* JUMP L */
+#define ARG     15	/* ARG r,n *//* set Argument */
+#define CALL	16	/* CALL r,func */
+#define RET	    17	/* RET r *//* return */
+#define PRINTLN	18	/* PRINTLN r,L *//* println function */
+#define LABEL 	19	/* LABEL L *//* label */
 
-#define LOADS   19	/* load string label */
+#define LOADS   20	/* load string label */
 
-#define LOADADDR    20
-#define LOAD        21
-#define STORE	    22
+#define LOADADDR    21
+#define LOAD        22
+#define STORE	    23
 
 char *getPivotName(int codenum);
 int getPivotNum(char *codename);

@@ -2,6 +2,7 @@
 %token SYMBOL NUMBER STRING
 %token INT
 %token RETURN IF
+%token EQEQ
 
 %left '+' '-'
 %left '*' '/'
@@ -110,6 +111,8 @@ exp:
 	{ $$ = makeAST(lessThanOp, $1, $3); }
 	| exp '>' exp
 	{ $$ = makeAST(greaterThanOp, $1, $3); }
+	| exp EQEQ exp
+	{ $$ = makeAST(eqeqOp, $1, $3); }
 	;
 
 prim_exp:
