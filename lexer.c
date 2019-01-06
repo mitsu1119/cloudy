@@ -68,6 +68,8 @@ again:
             return RETURN;
         } else if(!strcmp(yytext, "if")) {
             return IF;
+        } else if(!strcmp(yytext, "while")) {
+            return WHILE;
         }
 
 	    yylval.val = makeSymAST(yytext);

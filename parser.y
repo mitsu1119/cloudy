@@ -1,7 +1,7 @@
 /* parser.y */
 %token SYMBOL NUMBER STRING
 %token INT
-%token RETURN IF
+%token RETURN IF WHILE
 %token EQEQ
 
 %left '+' '-'
@@ -93,6 +93,8 @@ statement:
 	{ $$ = makeAST(returnSt, $2, NULL); }
 	| IF '(' exp ')' block
 	{ $$ = makeAST(ifSt, $3, $5); }
+	| WHILE '(' exp ')' block
+	{ $$ = makeAST(whileSt, $3, $5); }
 	;
 
 exp:

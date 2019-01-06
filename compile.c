@@ -68,6 +68,9 @@ void pivotStatement(AST *stat) {
     case ifSt:
         pivotIf(stat->left, stat->right);
         break;
+    case whileSt:
+        pivotWhile(stat->left, stat->right);
+        break;
     case blockSt:
         pivotBlock(stat->left, stat->right);
         break;
@@ -121,6 +124,20 @@ void pivotIf(AST *condition, AST *body) {
     genCode2(BEQ0, reg, label1);
     pivotStatement(body);
     genCode1(LABEL, label1);
+}
+
+void pivotWhile(AST *condition, AST *body) {
+    int reg = tmpCnt++;
+    int label1, label2;
+
+    label1 = labelcnt++;
+    label2 = labelcnt++;
+    genCode1(LABEL, label1);
+    pivotExpr(reg, condition);
+    genCode2(BEQ0, reg, label2);
+    pivotStatement(body);
+    genCode1(JUMP, label1);
+    genCode1(LABEL, label2);
 }
 
 void pivotExpr(int target, AST *p) {

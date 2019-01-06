@@ -26,5 +26,6 @@ void pivotStatement(AST *stat);
 void pivotBlock(AST *body, AST *localvars);
 void pivotExpr(int target, AST *p);
 void pivotIf(AST *condition, AST *body);
+void pivotWhile(AST *condition, AST *body);
 
 void initAssemble();

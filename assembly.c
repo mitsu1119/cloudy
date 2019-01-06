@@ -290,7 +290,7 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
         printf("\tjg .L%d\n", label1);
         printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
-        printf("\tjmp .L%d\n", label2);
+        printf("\tjmp\t.L%d\n", label2);
         printf(".L%d:\n", label1);
         printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
         printf(".L%d:", label2);
@@ -307,7 +307,7 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
         printf("\tjl .L%d\n", label1);
         printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
-        printf("\tjmp .L%d\n", label2);
+        printf("\tjmp\t.L%d\n", label2);
         printf(".L%d:\n", label1);
         printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
         printf(".L%d:", label2);
@@ -324,7 +324,7 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         printf("\tcmp\t%s,%s\n", tmpRegName[reg1], tmpRegName[reg2]);
         printf("\tje .L%d\n", label1);
         printf("\tmov\t%s, %d\n", tmpRegName[reg], 0);
-        printf("\tjmp .L%d\n", label2);
+        printf("\tjmp\t.L%d\n", label2);
         printf(".L%d:\n", label1);
         printf("\tmov\t%s,%d\n", tmpRegName[reg], 1);
         printf(".L%d:\n", label2);
@@ -334,6 +334,9 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         freeReg(reg1);
         printf("\tcmp\t%s,%d\n", tmpRegName[reg1], 0);
         printf("\tje\t.L%d\n", opd2);
+        return;
+    case JUMP:
+        printf("\tjmp\t.L%d\n", opd1);
         return;
     case CALL:
         saveAllReg();
