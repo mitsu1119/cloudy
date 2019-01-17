@@ -1,8 +1,9 @@
 /* parser.y */
 %token SYMBOL NUMBER STRING
 %token INT
-%token RETURN IF WHILE
 %token EQEQ
+%token RETURN IF WHILE
+%token WRITE
 
 %left '+' '-'
 %left '*' '/'
@@ -121,7 +122,8 @@ prim_exp:
 	SYMBOL
 	| NUMBER
 	| STRING
-	{ printf("prim_exp string %s\n", $1->str); }
+	| WRITE '(' STRING ',' exp ')'
+	{ $$ = makeAST(writeOp, $3, $5); }
 	| SYMBOL '(' ')'
 	{ $$ = makeAST(callOp, $1, NULL); }
 	;

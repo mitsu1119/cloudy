@@ -48,10 +48,13 @@ void asmGVar() {
     GVarp = 0;
 }
 
-void asmString(char *s) {
+int asmString(char *s) {
+    int l = labelcnt++;
     puts("section .rodata");
-    printf(".LC%d:\n", labelcnt++);
+    printf(".LC%d:\n", l);
     printf("\tdb\t'%s'\n",s);
+
+    return l;
 }
 
 void genCode1(int opcode, int operand1) {
@@ -348,6 +351,16 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         freeReg(reg1);
         if(reg1 != EAX) printf("\tmov\teax, %s\n", tmpRegName[reg1]);
         printf("\tjmp\t.L%d\n", returnLabel);
+        return;
+    case WRITE:
+        saveAllReg();
+        reg1 = appReg(opd3);
+        freeReg(reg1);
+        printf("\tmov\teax,4\n");   // write
+        printf("\tmov\tebx,1\n");  // stdout
+        printf("\tmov\tecx,.LC%d\n", opd2);  // string
+        printf("\tmov\tedx,%s\n", tmpRegName[reg1]); // length
+        printf("\tint\t0x80\n");
         return;
     case LABEL:
         printf(".L%d:\n", opd1);

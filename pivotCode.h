@@ -26,5 +26,7 @@
 #define LOAD        22
 #define STORE	    23
 
+#define WRITE       24  /* WRITE r,L,r */ /* write systemcall L:str, r:length */
+
 char *getPivotName(int codenum);
 int getPivotNum(char *codename);

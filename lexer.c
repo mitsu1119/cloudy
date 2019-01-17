@@ -70,6 +70,8 @@ again:
             return IF;
         } else if(!strcmp(yytext, "while")) {
             return WHILE;
+        } else if(!strcmp(yytext, "write")) {   // systemcall
+            return WRITE;
         }
 
 	    yylval.val = makeSymAST(yytext);

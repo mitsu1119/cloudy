@@ -28,6 +28,7 @@ struct pivot {
     { "LOADADDR", LOADADDR},
     { "LOAD", LOAD},
     { "STORE", STORE},
+    { "WRITE", WRITE},
     { 0, 0}
 };
 

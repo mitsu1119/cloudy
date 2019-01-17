@@ -142,6 +142,7 @@ void pivotWhile(AST *condition, AST *body) {
 
 void pivotExpr(int target, AST *p) {
     int r1, r2; // buf
+    int l1;
     if(p == NULL) return;
 
     switch(p->type) {
@@ -208,6 +209,14 @@ void pivotExpr(int target, AST *p) {
         return;
     case callOp:
         pivotCall(target, getSymbol(p->left));
+        return;
+    case writeOp:
+        l1 = asmString(p->left->str);
+        r1 = tmpCnt++;
+        pivotExpr(r1, NULL);
+        r2 = tmpCnt++;
+        pivotExpr(r2, p->right);
+        genCode3(WRITE, r1, l1, r2);
         return;
     default:
         fprintf(stderr, "wrong expr\n");

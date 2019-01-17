@@ -7,15 +7,18 @@
 #define FALSE 0
 #define TRUE 1
 
-// eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp => [L] exp  [R] exp
+// eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp, eqeqOp => [L] exp  [R] exp
 // callOp => [L] symbol
 // symOp => [L] symbol
 // numOp => [L] value
+// strOp => [L] string
+// printFucn => [L] string
 // blockSt => [L] bodyStatements  [R] localvars
 // returnSt => [L] retvalue
 // listAST => [L] factor  [R] nextList
 enum ASTtype {
-    eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp, eqeqOp, callOp, symOp, numOp, strOp, ifSt, whileSt, blockSt, returnSt, listAST
+    eqOp, addOp, subOp, mulOp, divOp, lessThanOp, greaterThanOp, eqeqOp, callOp, writeOp, symOp, numOp, strOp,
+    ifSt, whileSt, blockSt, returnSt, listAST
 };
 
 typedef struct _AST {
