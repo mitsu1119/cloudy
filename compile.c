@@ -143,6 +143,7 @@ void pivotWhile(AST *condition, AST *body) {
 void pivotExpr(int target, AST *p) {
     int r1, r2; // buf
     int l1;
+    AST *args;
     if(p == NULL) return;
 
     switch(p->type) {
@@ -211,11 +212,13 @@ void pivotExpr(int target, AST *p) {
         pivotCall(target, getSymbol(p->left));
         return;
     case writeOp:
-        l1 = asmString(p->left->str);
+        args = p->left;
+        l1 = asmString(args->left->str);
         r1 = tmpCnt++;
         pivotExpr(r1, NULL);
         r2 = tmpCnt++;
-        pivotExpr(r2, p->right);
+        args = getNext(args);
+        pivotExpr(r2, args->left);
         genCode3(WRITE, r1, l1, r2);
         return;
     default:

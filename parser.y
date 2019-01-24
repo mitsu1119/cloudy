@@ -18,7 +18,7 @@
     AST *val;
 }
 
-%type <val> lvars symbol_list block
+%type <val> lvars symbol_list args block
 %type <val> SYMBOL NUMBER STRING
 %type <val> RETURN
 %type <val> statements statement exp prim_exp
@@ -76,6 +76,13 @@ symbol_list:
 	{ $$ = addList($1,$3); }
 	;
 
+args:
+	exp
+	{$$ = makeAST(listAST, $1, NULL); }
+	| args ',' exp
+	{$$ = addList($1, $3); }
+	;
+
 statements:
 	statement
 	{ $$ = makeAST(listAST, $1, NULL); }
@@ -122,8 +129,8 @@ prim_exp:
 	SYMBOL
 	| NUMBER
 	| STRING
-	| WRITE '(' STRING ',' exp ')'
-	{ $$ = makeAST(writeOp, $3, $5); }
+	| WRITE '(' args ')'
+	{ $$ = makeAST(writeOp, $3, NULL); }
 	| SYMBOL '(' ')'
 	{ $$ = makeAST(callOp, $1, NULL); }
 	;

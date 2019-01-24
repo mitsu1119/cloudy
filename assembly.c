@@ -356,10 +356,10 @@ void compilePivot(int opcode, int opd1, int opd2, int opd3, char *opdS, int retu
         saveAllReg();
         reg1 = appReg(opd3);
         freeReg(reg1);
-        printf("\tmov\teax,4\n");   // write
         printf("\tmov\tebx,1\n");  // stdout
         printf("\tmov\tecx,.LC%d\n", opd2);  // string
         printf("\tmov\tedx,%s\n", tmpRegName[reg1]); // length
+        printf("\tmov\teax,4\n");   // write
         printf("\tint\t0x80\n");
         return;
     case LABEL:
